@@ -1,5 +1,6 @@
 [package]
-
 name = "magic_parser"
 version = "0.0.1"
-authors = [ "Daniel <dmoixy@gmail.com" ]
+authors = [ "Daniel Moi <dmoixy@gmail.com" ]
+
+[dependencies]
