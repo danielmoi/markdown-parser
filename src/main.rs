@@ -45,8 +45,9 @@ fn main() {
         html::push_html(&mut html_buf, parser);
 
 
-        let new_entry_path = out.join(entry_path);
+        let new_entry_path = out.join(&entry_path).with_extension("html");
         println!("new_entry_path: {}", &new_entry_path.display());
+
         fs::write(new_entry_path, html_buf).expect("Fail.......");
       }
     }
