@@ -3,7 +3,6 @@ extern crate pulldown_cmark;
 extern crate walkdir;
 
 use std::fs;
-use std::error::Error;
 use pulldown_cmark::{Parser, Options, html};
 use walkdir::WalkDir;
 use std::path::Path;
@@ -12,6 +11,10 @@ fn main() {
     println!("Hello there");
 
     let out = Path::new("./out");
+
+    let mut header_file = fs::File::open("header.html");
+    // let mut header_contents = String::new();
+    let header_contents = fs::read_to_string("header.html").unwrap();
 
     for entry in WalkDir::new("documents") {
       println!("--------------");
@@ -31,7 +34,7 @@ fn main() {
       let is_file = entry_path.is_file();
       println!("is_file: {}", is_file);
 
-      if (entry_path.is_file()) {
+      if entry_path.is_file() {
 
         let contents = fs::read_to_string(entry_path)
           .expect("Something went wrong reading the file");
@@ -42,6 +45,7 @@ fn main() {
         let parser = Parser::new_ext(&contents, options);
 
         let mut html_buf = String::new();
+        html_buf.push_str(&header_contents);
         html::push_html(&mut html_buf, parser);
 
 
