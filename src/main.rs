@@ -11,7 +11,6 @@ use std::path::Path;
 fn main() {
     println!("Hello there");
 
-    let file = "./basic.md";
     let out = Path::new("./out");
 
     for entry in WalkDir::new("documents") {
@@ -33,22 +32,26 @@ fn main() {
       println!("is_file: {}", is_file);
 
       if (entry_path.is_file()) {
+
+        let contents = fs::read_to_string(entry_path)
+          .expect("Something went wrong reading the file");
+        // println!("Contents: {}", contents);
+
+        let mut options = Options::empty();
+        options.insert(Options::all());
+        let parser = Parser::new_ext(&contents, options);
+
+        let mut html_buf = String::new();
+        html::push_html(&mut html_buf, parser);
+
+
         let new_entry_path = out.join(entry_path);
         println!("new_entry_path: {}", &new_entry_path.display());
-        fs::write(new_entry_path, "HELLO").expect("Fail.......");
+        fs::write(new_entry_path, html_buf).expect("Fail.......");
       }
     }
 
-    // let contents = fs::read_to_string(path)
-    //   .expect("Something went wrong reading the file");
-    // // println!("Contents: {}", contents);
 
-    // let mut options = Options::empty();
-    // options.insert(Options::all());
-    // let parser = Parser::new_ext(&contents, options);
-
-    // let mut html_buf = String::new();
-    // html::push_html(&mut html_buf, parser);
 
     // println!("HTML: {}", html_buf);
 
