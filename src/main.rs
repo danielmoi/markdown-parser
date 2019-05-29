@@ -11,10 +11,6 @@ use std::ffi::OsStr;
 fn main() {
     println!("Starting parser");
 
-    let header_contents = fs::read_to_string("header.html").unwrap();
-
-    let footer_contents = fs::read_to_string("footer.html").unwrap();
-
     for entry in WalkDir::new("documents") {
       let entry = entry.unwrap();
       let entry_path = Path::new(entry.path());
@@ -47,9 +43,7 @@ fn main() {
         let parser = Parser::new_ext(&contents, options);
 
         let mut html_buf = String::new();
-        html_buf.push_str(&header_contents);
         html::push_html(&mut html_buf, parser);
-        html_buf.push_str(&footer_contents);
 
         // TODO: Add details/summary with kuchiki / other
 
