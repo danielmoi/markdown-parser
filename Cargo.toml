@@ -7,3 +7,4 @@ authors = [ "Daniel Moi <dmoixy@gmail.com" ]
 soup = "0.3"
 pulldown-cmark = { version = "0.5", default-features = false, features = ["simd"] }
 walkdir = "2"
+kuchiki = "0.7.3"

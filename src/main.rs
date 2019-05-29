@@ -1,11 +1,13 @@
 extern crate soup;
 extern crate pulldown_cmark;
 extern crate walkdir;
+extern crate kuchiki;
 
 use std::fs;
 use pulldown_cmark::{Parser, Options, html};
 use walkdir::WalkDir;
 use std::path::Path;
+use kuchiki::traits::*;
 
 fn main() {
     println!("Starting parser");
@@ -42,9 +44,31 @@ fn main() {
         html::push_html(&mut html_buf, parser);
         html_buf.push_str(&footer_contents);
 
+        let html_str = html_buf.clone();
+
+        // Add details/summary
+        let document = kuchiki::parse_html().one(html_str);
+        let css_selector = "h2";
+
+        let magic = document.select(css_selector).unwrap();
+        println!("---------------");
+        println!("magic.size {}", magic.count());
+
+        for css_match in document.select(css_selector).unwrap() {
+          println!("in the for....");
+          let as_node = css_match.as_node();
+          // let new = kuchiki::NodeRef::new_element("div", []);
+          // as_node.append(new);
+          println!("NODE: {:#?}", as_node.to_string());
+//           as_node.detach().borrow();
+            // println!("NODE: {:#?}", as_node.to_string());
+        }
+          println!("document: {:#?}", &document.to_string());
+
         let new_entry_path = out.join(&entry_path).with_extension("html");
 
-        fs::write(new_entry_path, html_buf).expect("Error writing to html");
+        fs::write(new_entry_path, document.to_string()).expect("Error writing to html");
+        // fs::write(new_entry_path, html_buf).expect("Error writing to html");
       }
     }
 
