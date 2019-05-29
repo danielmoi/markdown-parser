@@ -3,10 +3,7 @@
 
 from bs4 import BeautifulSoup
 import copy
-
-
-
-
+import os
 
 def create_summary(doc, heading_text):
   summary = doc.new_tag("summary")
@@ -63,5 +60,18 @@ def main(path):
   # print("soup:", soup)
   print("new_doc:", new_doc)
 
-  f= open("new_stuff.html","w+")
+  parent_dir = os.path.abspath(__file__)
+  print("parent_dir:", parent_dir)
+  huh = os.path.dirname(path)
+  print("huh:", huh)
+  parts = path.split("/")
+  print("parts:", parts)
+  new_parts = ["./transformed"] + parts[2:]
+  output_path = "/".join(new_parts)
+
+  if not os.path.exists(os.path.dirname(output_path)):
+    os.makedirs(os.path.dirname(output_path))
+
+
+  f= open(output_path, "w+")
   f.write(str(new_doc))
