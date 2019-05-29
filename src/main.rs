@@ -34,7 +34,25 @@ fn main() {
       }
 
       if entry_path.is_file() {
+        // println!("entry_path {:?}", entry_path);
+        // println!("new_entry_path {:?}", new_entry_path);
 
+        let ext = entry_path.extension();
+
+        // don't copy files without an extension
+        match ext {
+          None => continue,
+          _ => (),
+        }
+
+        // copy if not markdown
+        if (ext.unwrap() != "md") {
+          fs::copy(entry_path, new_entry_path)
+            .expect("Error copying file");
+          continue;
+        }
+
+        // parse markdown
         let contents = fs::read_to_string(entry_path)
           .expect("Error reading entry file");
 
