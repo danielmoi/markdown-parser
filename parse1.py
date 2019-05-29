@@ -22,7 +22,7 @@ with open("./out/documents/three.html") as f:
 print("soup", soup.prettify())
 headings = []
 articles = []
-article = []
+details = []
 
 new_doc = BeautifulSoup()
 
@@ -32,27 +32,40 @@ new_doc = BeautifulSoup()
 # magic = soup.new_tag("div")
 # soup.append(magic)
 
-article = None
+details = None
+
+def create_summary(heading_text):
+  summary = new_doc.new_tag("summary")
+
+  wrapper = new_doc.new_tag("span", **{'class':'wrapper'})
+
+  heading = new_doc.new_tag("span", **{'class':'heading'})
+  heading.string = heading_text
+  wrapper.append(heading)
+
+  pill = new_doc.new_tag("span", **{'class':'pill'})
+  wrapper.append(pill)
+
+  summary.append(wrapper)
+
+  return summary
 
 for el in soup.find('body').children:
   print("el:", el)
 
   el_copy = copy.copy(el)
-  new_doc.append(el_copy)
 
   if (el.name == "h2"):
-    article = new_doc.new_tag("article")
-    print("heading.........")
-    print("article.contents:", article.contents)
-    print("article.is_empty_element:", article.is_empty_element)
-    new_doc.append(article)
-    article.append(el_copy)
+    details = new_doc.new_tag("details")
+    new_doc.append(details)
+    summary = create_summary(el.text)
+    details.append(summary)
   else:
     print("other.......")
-    if (article is None):
+    if (details is None):
       new_doc.append(el_copy)
     else:
-      article.append(el_copy)
+      details.append(el_copy)
 
 # print("soup:", soup)
 print("new_doc:", new_doc)
