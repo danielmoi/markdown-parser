@@ -5,6 +5,9 @@ from bs4 import BeautifulSoup
 import copy
 import os
 
+SOURCE_DIR = "./out"
+TARGET_DIR = "./html"
+
 def create_summary(doc, heading_text):
   summary = doc.new_tag("summary")
 
@@ -21,8 +24,8 @@ def create_summary(doc, heading_text):
 
   return summary
 
-def transform_headings(path):
-  with open(path) as f:
+def transform_headings(source_path, target_path):
+  with open(source_path) as f:
       soup = BeautifulSoup(f, 'html.parser')
 
   with open("./header.html") as header_html:
@@ -57,18 +60,33 @@ def transform_headings(path):
 
   # print("new_doc:", new_doc)
 
-  parts = path.split("/")
-  new_parts = ["./html"] + parts[2:]
-  output_path = "/".join(new_parts)
-
-  if not os.path.exists(os.path.dirname(output_path)):
-    os.makedirs(os.path.dirname(output_path))
-
-
-  f= open(output_path, "w+")
+  f= open(target_path, "w+")
   f.write(str(new_doc))
 
-for subdir, dirs, files in os.walk("./out"):
-    for file in files:
-        path = os.path.join(subdir, file)
-        transform_headings(path)
+print("Starting transform")
+
+def create_dir_if_not_exists(path):
+  if not os.path.exists(path):
+    os.makedirs(path)
+
+def source_to_target_path(source):
+  parts = source.split("/")
+  new_parts = [TARGET_DIR] + parts[2:]
+  target_path = "/".join(new_parts)
+  return target_path
+
+for subdir, dirs, files in os.walk(SOURCE_DIR):
+
+  target_path = source_to_target_path(subdir)
+  create_dir_if_not_exists(target_path)
+
+  for file in files:
+      source_path = os.path.join(subdir, file)
+
+      _, ext = os.path.splitext(source_path)
+      if (ext == ".html"):
+        target_path = source_to_target_path(source_path)
+
+        transform_headings(source_path, target_path)
+
+print("Finished transform")
