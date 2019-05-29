@@ -8,10 +8,13 @@ use walkdir::WalkDir;
 use std::path::{Path, PathBuf, Component};
 use std::ffi::OsStr;
 
+let SOURCE_DIR = "documents";
+let TARGET_DIR = "out";
+
 fn main() {
     println!("Starting parser");
 
-    for entry in WalkDir::new("documents") {
+    for entry in WalkDir::new(SOURCE_DIR) {
       let entry = entry.unwrap();
       let entry_path = Path::new(entry.path());
 
@@ -19,8 +22,8 @@ fn main() {
 
       let mut new_entry_path = PathBuf::from("./");
       for component in entry_path.components() {
-        if component == Component::Normal(OsStr::new("documents")) {
-          new_entry_path.push("out");
+        if component == Component::Normal(OsStr::new(SOURCE_DIR)) {
+          new_entry_path.push(TARGET_DIR);
         }
         else {
           new_entry_path.push(component);
