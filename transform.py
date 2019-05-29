@@ -22,11 +22,9 @@ def create_summary(doc, heading_text):
   return summary
 
 def transform_headings(path):
-  print("path:", path)
   with open(path) as f:
       soup = BeautifulSoup(f, 'html.parser')
 
-  print("soup:", soup)
   with open("./header.html") as header_html:
     header = BeautifulSoup(header_html, 'html.parser')
 
@@ -37,7 +35,7 @@ def transform_headings(path):
 
   details = None
 
-  for el in soup.find('body').children:
+  for el in soup.children:
     # print("el:", el)
 
     el_copy = copy.copy(el)
@@ -57,16 +55,10 @@ def transform_headings(path):
   html.append(body)
   new_doc.append(html)
 
-  # print("soup:", soup)
-  print("new_doc:", new_doc)
+  # print("new_doc:", new_doc)
 
-  parent_dir = os.path.abspath(__file__)
-  print("parent_dir:", parent_dir)
-  huh = os.path.dirname(path)
-  print("huh:", huh)
   parts = path.split("/")
-  print("parts:", parts)
-  new_parts = ["./transformed"] + parts[2:]
+  new_parts = ["./html"] + parts[2:]
   output_path = "/".join(new_parts)
 
   if not os.path.exists(os.path.dirname(output_path)):
