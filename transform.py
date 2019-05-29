@@ -28,7 +28,7 @@ def transform_headings(path):
   with open("./header.html") as header_html:
     header = BeautifulSoup(header_html, 'html.parser')
 
-  new_doc = BeautifulSoup("<!DOCTYPE html>")
+  new_doc = BeautifulSoup("<!DOCTYPE html>", 'html.parser')
 
   html = new_doc.new_tag("html", lang="en")
   body = new_doc.new_tag("body")
