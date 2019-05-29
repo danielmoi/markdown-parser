@@ -58,6 +58,13 @@ def transform_headings(source_path, target_path):
   html.append(body)
   new_doc.append(html)
 
+  pills = new_doc.find_all("span", class_="pill")
+  pill_count = len(pills)
+
+  for index, pill in enumerate(new_doc.find_all("span", class_="pill")):
+    pill_text = str(index + 1) + " / " + str(pill_count)
+    pill.string = pill_text
+
   # print("new_doc:", new_doc)
 
   f= open(target_path, "w+")
