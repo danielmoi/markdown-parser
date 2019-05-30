@@ -4,6 +4,7 @@
 from bs4 import BeautifulSoup
 import copy
 import os
+import shutil
 
 SOURCE_DIR = "./out"
 TARGET_DIR = "./html"
@@ -91,9 +92,11 @@ for subdir, dirs, files in os.walk(SOURCE_DIR):
       source_path = os.path.join(subdir, file)
 
       _, ext = os.path.splitext(source_path)
+      target_path = source_to_target_path(source_path)
       if (ext == ".html"):
-        target_path = source_to_target_path(source_path)
-
         transform_headings(source_path, target_path)
+      else:
+        shutil.copy2(source_path, target_path)
+
 
 print("Finished transform")
