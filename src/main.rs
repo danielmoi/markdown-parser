@@ -8,10 +8,11 @@ use walkdir::WalkDir;
 use std::path::{Path, PathBuf, Component};
 use std::ffi::OsStr;
 
-let SOURCE_DIR = "documents";
-let TARGET_DIR = "out";
 
 fn main() {
+    let SOURCE_DIR = "documents";
+    let TARGET_DIR = "out";
+
     println!("Starting parser");
 
     for entry in WalkDir::new(SOURCE_DIR) {
