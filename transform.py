@@ -59,6 +59,7 @@ def transform_headings(source_path, target_path):
   html.append(body)
   new_doc.append(html)
 
+  # Create "Pills"
   pills = new_doc.find_all("span", class_="pill")
   pill_count = len(pills)
 
