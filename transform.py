@@ -5,9 +5,14 @@ from bs4 import BeautifulSoup
 import copy
 import os
 import shutil
+import sys
 
 SOURCE_DIR = "./out"
 TARGET_DIR = "./html"
+
+print 'Argument List:', str(sys.argv)
+
+is_web = sys.argv[1] == 'web'
 
 def create_summary(doc, heading_text):
   summary = doc.new_tag("summary")
@@ -32,6 +37,9 @@ def transform_headings(source_path, target_path):
   with open("./header.html") as header_html:
     header = BeautifulSoup(header_html, 'html.parser')
 
+  with open("./header-web.html") as header_web_html:
+    header_web = BeautifulSoup(header_web_html, 'html.parser')
+
   new_doc = BeautifulSoup("<!DOCTYPE html>", 'html.parser')
 
   html = new_doc.new_tag("html", lang="en")
@@ -55,7 +63,7 @@ def transform_headings(source_path, target_path):
       else:
         details.append(el_copy)
 
-  html.append(header)
+  html.append(header_web if is_web else header)
   html.append(body)
   new_doc.append(html)
 
