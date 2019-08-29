@@ -9,4 +9,5 @@ rm -rf ./out-web
 cargo run
 
 # modify html
-python transform.py
+python transform.py ios
+python transform.py web

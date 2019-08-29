@@ -7,12 +7,34 @@ import os
 import shutil
 import sys
 
-SOURCE_DIR = "./middle"
-TARGET_DIR = "./out"
+print 'Args:', str(sys.argv)
 
-print 'Argument List:', str(sys.argv)
+def get_target_platform():
+  if len(sys.argv) == 1:
+    return 'ios'
+  if (sys.argv[1] == 'web'):
+    return 'web'
+  else:
+    return 'ios'
 
-is_web = (len(sys.argv) > 1) and (sys.argv[1] == 'web')
+platform = get_target_platform()
+print 'Platform:', platform
+
+def get_header():
+  if platform == 'web':
+    with open("./header-web.html") as header_html:
+      header = BeautifulSoup(header_html, 'html.parser')
+      return header
+  else:
+    with open("./header-ios.html") as header_html:
+      header = BeautifulSoup(header_html, 'html.parser')
+      return header
+
+def get_target_dir():
+  if platform == 'web':
+    return './out-web'
+  else:
+    return './out-ios'
 
 def create_summary(doc, heading_text):
   summary = doc.new_tag("summary")
@@ -32,18 +54,15 @@ def create_summary(doc, heading_text):
 
 def transform_headings(source_path, target_path):
   with open(source_path) as f:
-      soup = BeautifulSoup(f, 'html.parser')
+    soup = BeautifulSoup(f, 'html.parser')
 
-  with open("./header.html") as header_html:
-    header = BeautifulSoup(header_html, 'html.parser')
-
-  with open("./header-web.html") as header_web_html:
-    header_web = BeautifulSoup(header_web_html, 'html.parser')
 
   new_doc = BeautifulSoup("<!DOCTYPE html>", 'html.parser')
 
   html = new_doc.new_tag("html", lang="en")
   body = new_doc.new_tag("body")
+
+  header = get_header()
 
   details = None
 
@@ -63,7 +82,7 @@ def transform_headings(source_path, target_path):
       else:
         details.append(el_copy)
 
-  html.append(header_web if is_web else header)
+  html.append(header)
   html.append(body)
   new_doc.append(html)
 
@@ -80,7 +99,6 @@ def transform_headings(source_path, target_path):
   f= open(target_path, "w+")
   f.write(str(new_doc))
 
-print("Starting transform")
 
 def create_dir_if_not_exists(path):
   if not os.path.exists(path):
@@ -92,6 +110,12 @@ def source_to_target_path(source):
   target_path = "/".join(new_parts)
   return target_path
 
+print("Start transform")
+
+SOURCE_DIR = "./middle"
+TARGET_DIR = get_target_dir()
+
+# Transform
 for subdir, dirs, files in os.walk(SOURCE_DIR):
 
   target_path = source_to_target_path(subdir)
@@ -108,4 +132,4 @@ for subdir, dirs, files in os.walk(SOURCE_DIR):
         shutil.copy2(source_path, target_path)
 
 
-print("Finished transform")
+print("Finish transform")

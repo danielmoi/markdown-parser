@@ -17,6 +17,8 @@ Cargo.lock
 /in/
 /middle/
 /out/
+/out-ios/
+/out-web/
 
 *.pyc
 
