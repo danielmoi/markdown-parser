@@ -7,12 +7,12 @@ import os
 import shutil
 import sys
 
-SOURCE_DIR = "./out"
-TARGET_DIR = "./html"
+SOURCE_DIR = "./middle"
+TARGET_DIR = "./out"
 
 print 'Argument List:', str(sys.argv)
 
-is_web = sys.argv[1] == 'web'
+is_web = (len(sys.argv) > 1) and (sys.argv[1] == 'web')
 
 def create_summary(doc, heading_text):
   summary = doc.new_tag("summary")

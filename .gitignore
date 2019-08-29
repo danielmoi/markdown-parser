@@ -13,9 +13,10 @@ Cargo.lock
 /build/
 /.idea/
 /.vscode/
-/documents/
+
+/in/
+/middle/
 /out/
-/html/
 
 *.pyc
 

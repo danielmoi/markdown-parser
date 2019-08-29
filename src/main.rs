@@ -10,8 +10,8 @@ use std::ffi::OsStr;
 
 
 fn main() {
-    let SOURCE_DIR = "documents";
-    let TARGET_DIR = "out";
+    let SOURCE_DIR = "in";
+    let TARGET_DIR = "middle";
 
     println!("Starting parser");
 
