@@ -1,0 +1,22 @@
+<script>
+  const toggle = document.getElementById('toggle');
+
+  const details = document.getElementsByTagName('details');
+
+  const onClickToggle = () => {
+    toggle.classList.toggle('expanded');
+    toggle.classList.toggle('collapsed');
+
+    if (toggle.classList.contains('expanded')) {
+      for (let i = 0; i < details.length; i += 1) {
+        details[i].setAttribute('open', '');
+      }
+    } else {
+      for (let i = 0; i < details.length; i += 1) {
+        details[i].removeAttribute('open');
+      }
+    }
+  };
+
+  toggle.addEventListener('click', onClickToggle, false);
+</script>

@@ -36,6 +36,12 @@ def get_target_dir():
   else:
     return './out-ios'
 
+
+def get_script():
+  with open("./script.html") as script_html:
+    script = BeautifulSoup(script_html, 'html.parser')
+    return script
+
 def create_summary(doc, heading_text):
   summary = doc.new_tag("summary")
 
@@ -97,6 +103,9 @@ def transform_headings(source_path, target_path):
 
       else:
         details.append(el_copy)
+
+  script = get_script()
+  body.append(script)
 
   html.append(header)
   html.append(body)
