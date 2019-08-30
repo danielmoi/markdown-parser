@@ -78,7 +78,23 @@ def transform_headings(source_path, target_path):
       details.append(summary)
     else:
       if (details is None):
-        body.append(el_copy)
+        if (el.name == "h1"):
+          # create container
+          container = new_doc.new_tag("div", **{'class':'title-container'})
+
+          # then add (as 1st child) title h1
+          container.append(el_copy)
+
+          # then add (as 2nd child) the #toggle
+          toggle = new_doc.new_tag("div", id="toggle", **{'class':'collapsed'})
+          container.append(toggle)
+
+          # add completed container to body
+          body.append(container)
+        else:
+          body.append(el_copy)
+
+
       else:
         details.append(el_copy)
 
