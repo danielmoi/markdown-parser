@@ -6,6 +6,7 @@ import copy
 import os
 import shutil
 import sys
+import re
 
 print 'Args:', str(sys.argv)
 
@@ -121,6 +122,28 @@ def transform_headings(source_path, target_path):
 
   # print("new_doc:", new_doc)
 
+  # Create <a> tags for all urls
+  RE_URL = re.compile(r'(http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+)')
+
+  for tag in new_doc.find_all(text=True):
+      tags = []
+      url = False
+
+      for t in RE_URL.split(tag.string):
+          if RE_URL.match(t):
+              a = new_doc.new_tag("a", href=t, target='_blank')
+              a.string = t
+              tags.append(a)
+              url = True
+          else:
+              tags.append(t)
+
+      if url:
+          for t in tags:
+              tag.insert_before(t)
+          tag.extract()
+
+  # Write to disk
   f= open(target_path, "w+")
   f.write(str(new_doc))
 
