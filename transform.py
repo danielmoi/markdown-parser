@@ -7,6 +7,8 @@ import os
 import shutil
 import sys
 import re
+from datetime import datetime
+import pytz
 
 print 'Args:', str(sys.argv)
 
@@ -63,6 +65,12 @@ def transform_headings(source_path, target_path):
   with open(source_path) as f:
     soup = BeautifulSoup(f, 'html.parser')
 
+  statbuf = os.stat(source_path)
+  last_modified = statbuf.st_mtime
+  print("Modification time: {}".format(statbuf.st_mtime))
+
+  raw = datetime.fromtimestamp(last_modified, tz= pytz.timezone('Australia/Sydney'))
+  formatted = raw.strftime('%d/%m/%Y')
 
   new_doc = BeautifulSoup("<!DOCTYPE html>", 'html.parser')
 
@@ -85,6 +93,7 @@ def transform_headings(source_path, target_path):
       details.append(summary)
     else:
       if (details is None):
+        # the TITLE
         if (el.name == "h1"):
           # create container
           container = new_doc.new_tag("div", **{'class':'title-container'})
@@ -98,6 +107,12 @@ def transform_headings(source_path, target_path):
 
           # add completed container to body
           body.append(container)
+
+          # last_modified timestamp
+          date_container = new_doc.new_tag("div")
+          print("last_modified:", formatted)
+          date_container.string = str(formatted)
+          body.append(date_container)
         else:
           body.append(el_copy)
 

@@ -1,13 +1,14 @@
 extern crate soup;
 extern crate pulldown_cmark;
 extern crate walkdir;
+extern crate filetime;
 
 use std::fs;
 use pulldown_cmark::{Parser, Options, html};
 use walkdir::WalkDir;
 use std::path::{Path, PathBuf, Component};
 use std::ffi::OsStr;
-
+use filetime::FileTime;
 
 fn main() {
     let SOURCE_DIR = "in";
@@ -56,6 +57,9 @@ fn main() {
           continue;
         }
 
+        let metadata = fs::metadata(entry_path);
+
+
         // parse markdown
         let contents = fs::read_to_string(entry_path)
           .expect("Error reading entry file");
@@ -71,7 +75,15 @@ fn main() {
 
         let with_extension = new_entry_path.with_extension("html");
 
+        // TODO: is there a way to re-use the path with_extension?
+        let path_copy = Path::new(&with_extension).to_path_buf();
+
         fs::write(with_extension, html_buf).expect("Error writing to html");
+
+
+        // TODO: set ctime too (in addition to modified and access times)
+        let rs_timestamp = FileTime::from_last_modification_time(&metadata.unwrap());
+        filetime::set_file_times(path_copy, rs_timestamp, rs_timestamp).unwrap();
       }
     }
 
