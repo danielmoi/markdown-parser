@@ -49,7 +49,7 @@ fn main() {
           _ => (),
         }
 
-        // copy if not markdown
+        // just copy if not markdown (no parsing required)
         if (ext.unwrap() != "md") {
           fs::copy(entry_path, new_entry_path)
             .expect("Error copying file");
