@@ -67,10 +67,10 @@ def transform_headings(source_path, target_path):
 
   statbuf = os.stat(source_path)
   last_modified = statbuf.st_mtime
-  print("Modification time: {}".format(statbuf.st_mtime))
+  # print("Modification time: {}".format(statbuf.st_mtime))
 
   raw = datetime.fromtimestamp(last_modified, tz= pytz.timezone('Australia/Sydney'))
-  formatted = raw.strftime('%d/%m/%Y')
+  formatted = raw.strftime('%A %d %B %Y, %-I:%M:%S %p %Z')
 
   new_doc = BeautifulSoup("<!DOCTYPE html>", 'html.parser')
 
@@ -109,8 +109,8 @@ def transform_headings(source_path, target_path):
           body.append(container)
 
           # last_modified timestamp
-          date_container = new_doc.new_tag("div")
-          print("last_modified:", formatted)
+          date_container = new_doc.new_tag("div", id="last-modified", **{'class':'last-modified'})
+          print("formatted time:", formatted)
           date_container.string = str(formatted)
           body.append(date_container)
         else:
