@@ -111,7 +111,7 @@ def transform_headings(source_path, target_path):
           # last_modified timestamp
           date_container = new_doc.new_tag("div", id="last-modified", **{'class':'last-modified'})
           print("formatted time:", formatted)
-          date_container.string = str(formatted)
+          date_container.string = 'Last modified: ' + str(formatted)
           body.append(date_container)
         else:
           body.append(el_copy)
