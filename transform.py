@@ -70,7 +70,7 @@ def transform_headings(source_path, target_path):
   # print("Modification time: {}".format(statbuf.st_mtime))
 
   raw = datetime.fromtimestamp(last_modified, tz= pytz.timezone('Australia/Sydney'))
-  formatted = raw.strftime('%A %d %B %Y, %-I:%M:%S %p %Z')
+  formatted = raw.strftime('%d %B %Y, %-I:%M:%S %p %Z')
 
   new_doc = BeautifulSoup("<!DOCTYPE html>", 'html.parser')
 
