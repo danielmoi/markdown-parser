@@ -38,3 +38,24 @@ def get_script():
   with open("./script.html") as script_html:
     script = BeautifulSoup(script_html, 'html.parser')
     return script
+
+def create_dir_if_not_exists(path):
+  if not os.path.exists(path):
+    os.makedirs(path)
+
+def source_to_target_path(source, target_dir):
+  parts = source.split("/")
+  print("parts:", parts)
+  new_parts = [target_dir] + parts[2:]
+  target_path = "/".join(new_parts)
+  return target_path
+
+def change_ext(path, new_ext):
+  parts = path.split("/")
+  file_name = parts[len(parts) - 1]
+  file_name_parts = file_name.split(".")
+  new_file_name = file_name_parts[0] + "." + new_ext
+  start = parts[0:len(parts) - 1]
+  new_parts = start + [new_file_name]
+  new_path = "/".join(new_parts)
+  return new_path

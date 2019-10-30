@@ -134,15 +134,6 @@ def transform_headings(source_path, target_path, platform):
   f.write(str(new_doc))
 
 
-def create_dir_if_not_exists(path):
-  if not os.path.exists(path):
-    os.makedirs(path)
-
-def source_to_target_path(source, target_dir):
-  parts = source.split("/")
-  new_parts = [target_dir] + parts[2:]
-  target_path = "/".join(new_parts)
-  return target_path
 
 print("Start transform")
 
@@ -153,14 +144,14 @@ TARGET_DIR = utils.get_target_dir(PLATFORM)
 # Transform
 for subdir, dirs, files in os.walk(SOURCE_DIR):
 
-  target_path = source_to_target_path(subdir, TARGET_DIR)
-  create_dir_if_not_exists(target_path)
+  target_path = utils.source_to_target_path(subdir, TARGET_DIR)
+  utils.create_dir_if_not_exists(target_path)
 
   for file in files:
       source_path = os.path.join(subdir, file)
 
       _, ext = os.path.splitext(source_path)
-      target_path = source_to_target_path(source_path, TARGET_DIR)
+      target_path = utils.source_to_target_path(source_path, TARGET_DIR)
       if (ext == ".html"):
         transform_headings(source_path, target_path, PLATFORM)
       else:
