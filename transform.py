@@ -9,31 +9,21 @@ import sys
 import re
 from datetime import datetime
 import pytz
+import utils
 
 print 'Args:', str(sys.argv)
 
-def get_target_platform():
-  if len(sys.argv) == 1:
+def get_platform(sys_args):
+  if len(sys_args) == 1:
     return 'ios'
-  if (sys.argv[1] == 'web'):
+  if (sys_args[1] == 'web'):
     return 'web'
   else:
     return 'ios'
 
-platform = get_target_platform()
-print 'Platform:', platform
 
-def get_header():
-  if platform == 'web':
-    with open("./header-web.html") as header_html:
-      header = BeautifulSoup(header_html, 'html.parser')
-      return header
-  else:
-    with open("./header-ios.html") as header_html:
-      header = BeautifulSoup(header_html, 'html.parser')
-      return header
 
-def get_target_dir():
+def get_target_dir(platform):
   if platform == 'web':
     return './out-web'
   else:
@@ -61,7 +51,9 @@ def create_summary(doc, heading_text):
 
   return summary
 
-def transform_headings(source_path, target_path):
+def transform_headings(source_path, target_path, platform):
+  print 'Platform:', platform
+
   with open(source_path) as f:
     soup = BeautifulSoup(f, 'html.parser')
 
@@ -77,7 +69,7 @@ def transform_headings(source_path, target_path):
   html = new_doc.new_tag("html", lang="en")
   body = new_doc.new_tag("body")
 
-  header = get_header()
+  header = utils.get_header(platform)
 
   details = None
 
@@ -95,6 +87,7 @@ def transform_headings(source_path, target_path):
       if (details is None):
         # the TITLE
         if (el.name == "h1"):
+          print("el:", el)
           # create container
           container = new_doc.new_tag("div", **{'class':'title-container'})
 
@@ -167,30 +160,31 @@ def create_dir_if_not_exists(path):
   if not os.path.exists(path):
     os.makedirs(path)
 
-def source_to_target_path(source):
+def source_to_target_path(source, target_dir):
   parts = source.split("/")
-  new_parts = [TARGET_DIR] + parts[2:]
+  new_parts = [target_dir] + parts[2:]
   target_path = "/".join(new_parts)
   return target_path
 
 print("Start transform")
 
+PLATFORM = get_platform(sys.argv)
 SOURCE_DIR = "./middle"
-TARGET_DIR = get_target_dir()
+TARGET_DIR = get_target_dir(PLATFORM)
 
 # Transform
 for subdir, dirs, files in os.walk(SOURCE_DIR):
 
-  target_path = source_to_target_path(subdir)
+  target_path = source_to_target_path(subdir, TARGET_DIR)
   create_dir_if_not_exists(target_path)
 
   for file in files:
       source_path = os.path.join(subdir, file)
 
       _, ext = os.path.splitext(source_path)
-      target_path = source_to_target_path(source_path)
+      target_path = source_to_target_path(source_path, TARGET_DIR)
       if (ext == ".html"):
-        transform_headings(source_path, target_path)
+        transform_headings(source_path, target_path, PLATFORM)
       else:
         shutil.copy2(source_path, target_path)
 
