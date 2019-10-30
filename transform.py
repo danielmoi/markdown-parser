@@ -12,28 +12,7 @@ import pytz
 import utils
 
 print 'Args:', str(sys.argv)
-
-def get_platform(sys_args):
-  if len(sys_args) == 1:
-    return 'ios'
-  if (sys_args[1] == 'web'):
-    return 'web'
-  else:
-    return 'ios'
-
-
-
-def get_target_dir(platform):
-  if platform == 'web':
-    return './out-web'
-  else:
-    return './out-ios'
-
-
-def get_script():
-  with open("./script.html") as script_html:
-    script = BeautifulSoup(script_html, 'html.parser')
-    return script
+print 'Platform:', utils.get_platform(sys.argv)
 
 def create_summary(doc, heading_text):
   summary = doc.new_tag("summary")
@@ -52,7 +31,7 @@ def create_summary(doc, heading_text):
   return summary
 
 def transform_headings(source_path, target_path, platform):
-  print 'Platform:', platform
+  # print 'Platform:', platform
 
   with open(source_path) as f:
     soup = BeautifulSoup(f, 'html.parser')
@@ -87,7 +66,6 @@ def transform_headings(source_path, target_path, platform):
       if (details is None):
         # the TITLE
         if (el.name == "h1"):
-          print("el:", el)
           # create container
           container = new_doc.new_tag("div", **{'class':'title-container'})
 
@@ -113,7 +91,7 @@ def transform_headings(source_path, target_path, platform):
       else:
         details.append(el_copy)
 
-  script = get_script()
+  script = utils.get_script()
   body.append(script)
 
   html.append(header)
@@ -168,9 +146,9 @@ def source_to_target_path(source, target_dir):
 
 print("Start transform")
 
-PLATFORM = get_platform(sys.argv)
+PLATFORM = utils.get_platform(sys.argv)
 SOURCE_DIR = "./middle"
-TARGET_DIR = get_target_dir(PLATFORM)
+TARGET_DIR = utils.get_target_dir(PLATFORM)
 
 # Transform
 for subdir, dirs, files in os.walk(SOURCE_DIR):
