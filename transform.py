@@ -11,7 +11,7 @@ from datetime import datetime
 import pytz
 import utils
 
-print 'Args:', str(sys.argv)
+# print 'Args:', str(sys.argv)
 print 'Platform:', utils.get_platform(sys.argv)
 
 def create_summary(doc, heading_text):
@@ -81,7 +81,7 @@ def transform_headings(source_path, target_path, platform):
 
           # last_modified timestamp
           date_container = new_doc.new_tag("div", id="last-modified", **{'class':'last-modified'})
-          print("formatted time:", formatted)
+          # print("formatted time:", formatted)
           date_container.string = 'Last modified: ' + str(formatted)
           body.append(date_container)
         else:

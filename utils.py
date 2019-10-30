@@ -45,7 +45,6 @@ def create_dir_if_not_exists(path):
 
 def source_to_target_path(source, target_dir):
   parts = source.split("/")
-  print("parts:", parts)
   new_parts = [target_dir] + parts[2:]
   target_path = "/".join(new_parts)
   return target_path
