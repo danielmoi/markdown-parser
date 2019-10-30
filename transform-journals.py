@@ -30,12 +30,21 @@ def transform(source_path, target_path, platform):
   journal.string = data["JournalAbbrev"] + " " + data["Year"]
   body.append(journal)
 
-  # Abstract
+  # Pubmed Link
   link_container = new_doc.new_tag("p")
-  link = new_doc.new_tag("a", href=data["Link"], **{'class':'journal-link'})
+  link = new_doc.new_tag("a", href=data["Link"], **{'class':'pubmed-link'})
   link.string = data["Link"]
   link_container.append(link)
   body.append(link_container)
+
+
+  # DOI Link
+  if ("DOI" in data):
+    link_container = new_doc.new_tag("p")
+    link = new_doc.new_tag("a", href=data["DOI"], **{'class':'doi-link'})
+    link.string = data["DOI"]
+    link_container.append(link)
+    body.append(link_container)
 
 
   # Abstract
@@ -44,10 +53,15 @@ def transform(source_path, target_path, platform):
   body.append(abstract_title)
 
   if ("Abstract" in data):
-    for p in data["Abstract"]:
-      abstract = new_doc.new_tag("p", **{'class':'abstract'})
-      abstract.string = p
-      body.append(abstract)
+    abstract = new_doc.new_tag("p", **{'class':'abstract'})
+
+    if (isinstance(data["Abstract"], list)):
+      for p in data["Abstract"]:
+        abstract.string = p
+    else:
+      abstract.string = data["Abstract"]
+
+    body.append(abstract)
 
   # Notes
   notes_title = new_doc.new_tag("h3", **{'class':'notes-title'})
