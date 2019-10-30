@@ -5,29 +5,60 @@ from bs4 import BeautifulSoup
 import copy
 import os
 import shutil
-import sys
-import re
-from datetime import datetime
-import pytz
 import utils
+import json
+import sys
 
 print("Start json transform")
 
 def transform(source_path, target_path, platform):
   with open(source_path) as f:
-    soup = BeautifulSoup(f, 'html.parser')
-
-  statbuf = os.stat(source_path)
-  last_modified = statbuf.st_mtime
-  # print("Modification time: {}".format(statbuf.st_mtime))
-
-  raw = datetime.fromtimestamp(last_modified, tz= pytz.timezone('Australia/Sydney'))
-  formatted = raw.strftime('%d %B %Y, %-I:%M:%S %p %Z')
+    data = json.load(f)
 
   new_doc = BeautifulSoup("<!DOCTYPE html>", 'html.parser')
 
   html = new_doc.new_tag("html", lang="en")
   body = new_doc.new_tag("body")
+
+  # Title
+  title = new_doc.new_tag("h1", **{'class':'title'})
+  title.string = data["Title"]
+  body.append(title)
+
+  # Journal
+  journal = new_doc.new_tag("p", **{'class':'journal'})
+  journal.string = data["JournalAbbrev"] + " " + data["Year"]
+  body.append(journal)
+
+  # Abstract
+  link_container = new_doc.new_tag("p")
+  link = new_doc.new_tag("a", href=data["Link"], **{'class':'journal-link'})
+  link.string = data["Link"]
+  link_container.append(link)
+  body.append(link_container)
+
+
+  # Abstract
+  abstract_title = new_doc.new_tag("h3", **{'class':'abstract-title'})
+  abstract_title.string = "Abstract"
+  body.append(abstract_title)
+
+  for p in data["Abstract"]:
+    abstract = new_doc.new_tag("p", **{'class':'abstract'})
+    abstract.string = p
+    body.append(abstract)
+
+  # Notes
+  notes_title = new_doc.new_tag("h3", **{'class':'notes-title'})
+  notes_title.string = "Notes"
+  body.append(notes_title)
+
+  if ("Notes" in data):
+    for p in data["Notes"]:
+      note = new_doc.new_tag("p", **{'class':'note'})
+      note.string = p
+      body.append(note)
+
 
   header = utils.get_header(platform)
 
