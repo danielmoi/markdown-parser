@@ -43,10 +43,11 @@ def transform(source_path, target_path, platform):
   abstract_title.string = "Abstract"
   body.append(abstract_title)
 
-  for p in data["Abstract"]:
-    abstract = new_doc.new_tag("p", **{'class':'abstract'})
-    abstract.string = p
-    body.append(abstract)
+  if ("Abstract" in data):
+    for p in data["Abstract"]:
+      abstract = new_doc.new_tag("p", **{'class':'abstract'})
+      abstract.string = p
+      body.append(abstract)
 
   # Notes
   notes_title = new_doc.new_tag("h3", **{'class':'notes-title'})
@@ -71,7 +72,7 @@ def transform(source_path, target_path, platform):
   f.write(str(new_doc))
 
 PLATFORM = utils.get_platform(sys.argv)
-SOURCE_DIR = "./middle"
+SOURCE_DIR = "./in"
 TARGET_DIR = utils.get_target_dir(PLATFORM)
 
 # Transform
@@ -87,7 +88,6 @@ for subdir, dirs, files in os.walk(SOURCE_DIR):
       target_path = utils.source_to_target_path(source_path, TARGET_DIR)
       if (ext == ".json"):
         new_path = utils.change_ext(target_path, 'html')
-        print "JSON"
         transform(source_path, new_path, PLATFORM)
       else:
         shutil.copy2(source_path, target_path)
