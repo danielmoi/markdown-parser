@@ -76,9 +76,12 @@ def transform(source_path, target_path, platform):
         note.string = p
         body.append(note)
     else:
-      notes = new_doc.new_tag("p", **{'class':'notes'})
-      notes.string = data["Notes"]
-      body.append(notes)
+      raw_notes = data["Notes"]
+      arr_notes = raw_notes.split("\n")
+      for n in arr_notes:
+        note = new_doc.new_tag("p", **{'class':'note'})
+        note.string = n
+        body.append(note)
 
 
 
