@@ -53,15 +53,16 @@ def transform(source_path, target_path, platform):
   body.append(abstract_title)
 
   if ("Abstract" in data):
-    abstract = new_doc.new_tag("p", **{'class':'abstract'})
-
     if (isinstance(data["Abstract"], list)):
       for p in data["Abstract"]:
+        abstract = new_doc.new_tag("p", **{'class':'abstract'})
         abstract.string = p
+        body.append(abstract)
     else:
+      abstract = new_doc.new_tag("p", **{'class':'abstract'})
       abstract.string = data["Abstract"]
+      body.append(abstract)
 
-    body.append(abstract)
 
   # Notes
   notes_title = new_doc.new_tag("h3", **{'class':'notes-title'})
@@ -69,10 +70,16 @@ def transform(source_path, target_path, platform):
   body.append(notes_title)
 
   if ("Notes" in data):
-    for p in data["Notes"]:
-      note = new_doc.new_tag("p", **{'class':'note'})
-      note.string = p
-      body.append(note)
+    if (isinstance(data["Notes"], list)):
+      for p in data["Notes"]:
+        note = new_doc.new_tag("p", **{'class':'note'})
+        note.string = p
+        body.append(note)
+    else:
+      notes = new_doc.new_tag("p", **{'class':'notes'})
+      notes.string = data["Notes"]
+      body.append(notes)
+
 
 
   header = utils.get_header(platform)
